@@ -73,10 +73,13 @@ export async function submitRegistration(
 
   const records = safeRead(storage);
   const duplicate = records.some((r) => r.email === email && r.eventId === values.eventId);
-  if (duplicate) {
-    throw new RegistrationError('This email is already registered for that event in this demo.', {
+
+  const phone = normalisePhone(values.phone);
+  const phoneTaken = records.some((r) => r.phone === phone && r.eventId === values.eventId);
+  if (phoneTaken) {
+    throw new RegistrationError('This phone number is already registered for this event.', {
       status: 409,
-      fieldErrors: { email: 'Already registered for this event (demo).' },
+      fieldErrors: { phone: 'Already registered for this event.' },
     });
   }
 
